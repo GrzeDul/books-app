@@ -12,6 +12,8 @@ const templates = {
   ),
 };
 
+const favoriteBooks = [];
+
 function renderBooks() {
   const list = document.querySelector(select.booksPanel.list);
   for (const book of dataSource.books) {
@@ -32,4 +34,32 @@ function renderBooks() {
   }
 }
 
+function addToFavorites(bookCover) {
+  const bookId = bookCover.getAttribute('data-id');
+  if (!bookCover.classList.contains('favorite')) {
+    bookCover.classList.add('favorite');
+    favoriteBooks.push(bookId);
+  } else {
+    bookCover.classList.remove('favorite');
+    const index = favoriteBooks.indexOf(bookId);
+    favoriteBooks.splice(index, 1);
+  }
+}
+
+function initActions() {
+  const list = document.querySelector(select.booksPanel.list);
+  // add event, no for loop for links in list attempt
+  list.addEventListener('dblclick', function (event) {
+    event.preventDefault();
+    // get element link
+    const bookCover = event.target.parentNode.parentNode;
+    // check if clicked element is book grandparent node of img: link have unique data-id
+    if (bookCover.getAttribute('data-id')) {
+      // add link
+      addToFavorites(bookCover);
+    }
+  });
+}
+
 renderBooks();
+initActions();
